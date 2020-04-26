@@ -5,13 +5,14 @@
   "default_locale": "ja",
   "description": "__MSG_appDesc__",
   "content_scripts": [{
-    "matches": ["https://youtube.com/*"],
-    "js": ["js/content.js"]
+    "matches": ["https://www.youtube.com/*"],
+    "js": ["js/loader.js"]
   }],
   "background": {
     "persistent": false,
     "scripts": ["js/background.js"]
   },
+  "web_accessible_resources": ["js/content.js"],
   "permissions": [
     "tabs",
     "storage"
