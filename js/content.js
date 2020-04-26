@@ -1,6 +1,12 @@
+import Lemmatizer from '../javascript-lemmatizer/js/lemmatizer.js'
+import Ejdc from '../ejdc-hand/ejdc-hand.js'
+
+const lemmatizer = new Lemmatizer()
+
 const TIMEOUT_DULATION = 300;
 const CLONE_CAPTION_WINDOW_ID = 'extension-clone-caption-window'
 const ENG_WORD_SPAN_CLASS = 'extension-word-span'
+const WOED_SPAN_DATA_ATTRIBUTE = 'extension-word-data'
 
 const WHITLIST_CHARS = [
   "'", "’", '.'
@@ -82,8 +88,80 @@ function getCloneCaption(){
   return document.getElementById(CLONE_CAPTION_WINDOW_ID)
 }
 
-function aaaaaaaa(str){
-  console.log('clicked: '+str)
+function getMeaningList(word, sentence){
+  const wordMeanList = []
+  if(sentence.indexOf(word) < 2 && word !== 'I'){ //文頭が" or 'のときがあるため2
+    const lowerWord = word.toLowerCase()
+    const lemWords = lemmatizer.only_lemmas(lowerWord)
+    for(const lemWord of lemWords){
+      const lemMean = Ejdc[lemWord]
+      if(Array.isArray(lemMean)){
+        for(const mean of lemMean){
+          if(mean && !wordMeanList.includes(mean)){
+            wordMeanList.push(mean)
+          }
+        }
+      }else{
+        if(lemMean && !wordMeanList.includes(lemMean)){
+          wordMeanList.push(lemMean)
+        }
+      }
+
+    }
+
+    const rawMean = Ejdc[word]
+    if(Array.isArray(rawMean)){
+      for(const mean of rawMean){
+        if(mean && !wordMeanList.includes(mean)){
+          wordMeanList.push(mean)
+        }
+      }
+    }else{
+      if(rawMean && !wordMeanList.includes(rawMean)){
+        wordMeanList.push(rawMean)
+      }
+    }
+
+  }else{
+    const rawMean = Ejdc[word]
+    if(Array.isArray(rawMean)){
+      for(const mean of rawMean){
+        if(mean && !wordMeanList.includes(mean)){
+          wordMeanList.push(mean)
+        }
+      }
+    }else{
+      if(rawMean && !wordMeanList.includes(rawMean)){
+        wordMeanList.push(rawMean)
+      }
+    }
+
+    const lowerWord = word.toLowerCase()
+    const lemWords = lemmatizer.only_lemmas(lowerWord)
+    for(const lemWord of lemWords){
+      const lemMean = Ejdc[lemWord]
+      if(Array.isArray(lemMean)){
+        for(const mean of lemMean){
+          if(mean && !wordMeanList.includes(mean)){
+            wordMeanList.push(mean)
+          }
+        }
+      }else{
+        if(lemMean && !wordMeanList.includes(lemMean)){
+          wordMeanList.push(lemMean)
+        }
+      }
+
+    }
+  }
+  return wordMeanList
+}
+
+function clickWordEvent(word, sentence){
+  
+  const meanList = getMeaningList(word, sentence)
+
+  console.log(meanList)
 }
 
 const captionObserver = new MutationObserver( () => {
@@ -128,8 +206,8 @@ const captionObserver = new MutationObserver( () => {
     line.innerHTML = null
     // const separator = /(?<=\s+|\W|_)/ //split with sepalator char
     const separator = /([^a-zA-Z_0-9\.\’\']+|\.\.\.|\.\.|'')/
-    wordList = text.split(separator)
-    console.log(wordList)
+    const wordList = text.split(separator)
+    // console.log(wordList)
     let newInnerHTML = ''
     for(const word of wordList){
       let validWord = ''
@@ -147,11 +225,12 @@ const captionObserver = new MutationObserver( () => {
         validWord = validWord.slice(0, -1)
       }
       
-      console.log(validWord)
+      // console.log(validWord)
       const wordSpanElm = document.createElement('span')
       wordSpanElm.innerHTML = validWord
       wordSpanElm.style.color = 'red'
       wordSpanElm.className = ENG_WORD_SPAN_CLASS
+      wordSpanElm.setAttribute(WOED_SPAN_DATA_ATTRIBUTE, text);
       // wordSpanElm.style.textDecoration = 'underline'
       const replaced = wordSpanElm.outerHTML
       if(word.length === colonCounter){
@@ -165,7 +244,7 @@ const captionObserver = new MutationObserver( () => {
 
   const spanList = document.querySelectorAll('.'+ENG_WORD_SPAN_CLASS)
   for(const span of spanList){
-    span.onclick = ()=>{aaaaaaaa(span.textContent.replace("’","'"))}
+    span.onclick = ()=>{clickWordEvent(span.textContent.replace("’","'"), span.getAttribute(WOED_SPAN_DATA_ATTRIBUTE))}
   }
 
 
