@@ -90,70 +90,35 @@ function getCloneCaption(){
 
 function getMeaningList(word, sentence){
   const wordMeanList = []
+  let firstWordList = []
+  let secondWordList = []
+
   if(sentence.indexOf(word) < 2 && word !== 'I'){ //文頭が" or 'のときがあるため2
-    const lowerWord = word.toLowerCase()
-    const lemWords = lemmatizer.only_lemmas(lowerWord)
-    for(const lemWord of lemWords){
-      const lemMean = Ejdc[lemWord]
-      if(Array.isArray(lemMean)){
-        for(const mean of lemMean){
-          if(mean && !wordMeanList.includes(mean)){
-            wordMeanList.push(mean)
-          }
-        }
-      }else{
-        if(lemMean && !wordMeanList.includes(lemMean)){
-          wordMeanList.push(lemMean)
-        }
-      }
-
-    }
-
-    const rawMean = Ejdc[word]
-    if(Array.isArray(rawMean)){
-      for(const mean of rawMean){
-        if(mean && !wordMeanList.includes(mean)){
-          wordMeanList.push(mean)
-        }
-      }
-    }else{
-      if(rawMean && !wordMeanList.includes(rawMean)){
-        wordMeanList.push(rawMean)
-      }
-    }
-
+    firstWordList = lemmatizer.only_lemmas(word.toLowerCase())
+    secondWordList = [word]
   }else{
-    const rawMean = Ejdc[word]
-    if(Array.isArray(rawMean)){
-      for(const mean of rawMean){
-        if(mean && !wordMeanList.includes(mean)){
-          wordMeanList.push(mean)
-        }
-      }
-    }else{
-      if(rawMean && !wordMeanList.includes(rawMean)){
-        wordMeanList.push(rawMean)
-      }
-    }
+    firstWordList = [word]
+    secondWordList = lemmatizer.only_lemmas(word.toLowerCase())
+  }
 
-    const lowerWord = word.toLowerCase()
-    const lemWords = lemmatizer.only_lemmas(lowerWord)
-    for(const lemWord of lemWords){
-      const lemMean = Ejdc[lemWord]
-      if(Array.isArray(lemMean)){
-        for(const mean of lemMean){
-          if(mean && !wordMeanList.includes(mean)){
-            wordMeanList.push(mean)
-          }
-        }
-      }else{
-        if(lemMean && !wordMeanList.includes(lemMean)){
-          wordMeanList.push(lemMean)
-        }
-      }
-
+  for(const firstWord of firstWordList){
+    const mean = Ejdc[firstWord]
+    if(mean){
+      wordMeanList.push({word: firstWord, mean: mean})
     }
   }
+
+  for(const secondWord of secondWordList){
+    if(firstWordList.includes(secondWord)){
+      continue
+    }
+
+    const mean = Ejdc[secondWord]
+    if(mean){
+      wordMeanList.push({word: secondWord, mean: mean})
+    }
+  }
+
   return wordMeanList
 }
 
