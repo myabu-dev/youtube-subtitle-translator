@@ -61,8 +61,7 @@ function setCaptionObserver(){
 
   captionObserver.observe(captionWindow.parentElement.parentElement, {
     childList: true,
-    subtree: true,
-    textContent: true
+    subtree: true
   })
 }
 
@@ -130,6 +129,7 @@ function clickWordEvent(word, sentence){
 }
 
 const captionObserver = new MutationObserver( () => {
+  console.log('change')
   removeCloneCaption()
 
   let captionWindow = document.querySelectorAll('div[id*="caption-window"][draggable="true"]')
@@ -217,8 +217,7 @@ const captionObserver = new MutationObserver( () => {
 
   captionObserver.observe(captionWindow.parentElement.parentElement, {
     childList: true,
-    subtree: true,
-    textContent: true
+    subtree: true
   })
 
   // console.log(captionContent)
