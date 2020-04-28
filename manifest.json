@@ -8,6 +8,9 @@
     "matches": ["https://www.youtube.com/*"],
     "js": ["js/loader.js"]
   }],
+  "browser_action": {
+    "default_popup": "popup.html"
+  },
   "background": {
     "persistent": false,
     "scripts": ["js/background.js"]
