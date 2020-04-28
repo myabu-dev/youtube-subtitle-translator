@@ -3,10 +3,15 @@
 	const elid = exid + "-script"
 
 	if(!document.getElementById(elid)) {
-    const scr = document.createElement("script")
-    scr.id = elid
-    scr.src = chrome.runtime.getURL("js/content.js")
-    scr.type = "module"
-    document.head.append(scr)
+
+    const jsframe = document.createElement('script')
+    jsframe.src = chrome.runtime.getURL('jsframe/jsframe.min.js')
+    document.head.append(jsframe)
+
+    const content = document.createElement("script")
+    content.id = elid
+    content.src = chrome.runtime.getURL("js/content.js")
+    content.type = "module"
+    document.head.append(content)
   }
 }

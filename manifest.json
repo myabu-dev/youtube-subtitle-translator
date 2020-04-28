@@ -17,7 +17,8 @@
     "javascript-lemmatizer/dict/*",
     "javascript-lemmatizer/js/lemmatizer.js",
     "javascript-lemmatizer/underscore/underscore.js",
-    "ejdc-hand/ejdc-hand.js"
+    "ejdc-hand/ejdc-hand.js",
+    "jsframe/jsframe.min.js"
   ],
   "permissions": [
     "tabs",
